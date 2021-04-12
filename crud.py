@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from marshmallow import fields
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://flask_tutorial:flask01.04.2021@localhost:3306/lab-6'
@@ -35,8 +36,11 @@ def get_saw_by_id(id):
 
 
 class SawSchema(ma.Schema):
-    class Meta:
-        fields = ('made_of_material', 'username', 'length_in_cm', 'material_to_saw', 'drive_type')
+    made_of_material = fields.String()
+    username = fields.String()
+    length_in_cm = fields.Float()
+    material_to_saw = fields.String()
+    drive_type = fields.String()
 
 
 saw_schema = SawSchema()
