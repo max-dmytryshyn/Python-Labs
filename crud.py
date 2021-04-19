@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-from marshmallow import fields
+from marshmallow import fields, validate, exceptions
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://flask_tutorial:flask01.04.2021@localhost:3306/lab-6'
@@ -35,12 +35,17 @@ def get_saw_by_id(id):
     return saw
 
 
+@app.errorhandler(exceptions.ValidationError)
+def handle_exception(e):
+    return e.messages, 400
+
+
 class SawSchema(ma.Schema):
-    made_of_material = fields.String()
-    username = fields.String()
-    length_in_cm = fields.Float()
-    material_to_saw = fields.String()
-    drive_type = fields.String()
+    made_of_material = fields.String(validate=validate.Length(max=80))
+    username = fields.String(validate=validate.Length(max=80))
+    length_in_cm = fields.Float(validate=validate.Range(0.1, 80))
+    material_to_saw = fields.String(validate=validate.Length(max=80))
+    drive_type = fields.String(validate=validate.Length(max=80))
 
 
 saw_schema = SawSchema()
